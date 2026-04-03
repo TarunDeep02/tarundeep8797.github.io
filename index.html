@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tarun Deep — Finance & Crypto Operations</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: rgba(201,168,76,0.15);
+    --text: #e8e8f0;
+    --muted: #7a7a9a;
+    --accent: #4fc3c3;
+    --border: rgba(201,168,76,0.2);
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:0; opacity:0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 1.2rem 4rem;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration:none;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg-circle {
+    position:absolute;
+    border-radius:50%;
+    filter: blur(120px);
+    pointer-events:none;
+  }
+  .hero-bg-circle.c1 {
+    width:600px; height:600px;
+    background: radial-gradient(circle, rgba(201,168,76,0.12), transparent 70%);
+    top:-100px; right:-100px;
+    animation: pulse 8s ease-in-out infinite;
+  }
+  .hero-bg-circle.c2 {
+    width:400px; height:400px;
+    background: radial-gradient(circle, rgba(79,195,195,0.08), transparent 70%);
+    bottom:0; left:-50px;
+    animation: pulse 10s ease-in-out infinite reverse;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); opacity:0.8; }
+    50% { transform: scale(1.1); opacity:1; }
+  }
+  .hero-content { position:relative; z-index:1; max-width:800px; }
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--border);
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+  .hero h1 span { color: var(--gold); }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.8s 0.2s ease both;
+    font-weight: 300;
+  }
+  .hero-cta {
+    display:flex; gap:1rem; flex-wrap:wrap;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .btn {
+    padding: 0.85rem 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: all 0.3s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: #0a0a0f;
+    font-weight: 500;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform:translateY(-2px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { border-color: var(--gold); background: var(--gold-dim); }
+
+  .hero-stats {
+    display:flex; gap:3rem; margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight:700;
+    color: var(--gold);
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top:0.2rem;
+    font-family: 'DM Mono', monospace;
+    letter-spacing:0.05em;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(24px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+
+  /* SECTIONS */
+  section { padding: 6rem 4rem; position:relative; z-index:1; }
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 3rem;
+    line-height: 1.2;
+  }
+  .section-title span { color: var(--gold); }
+
+  /* ABOUT */
+  .about-grid {
+    display:grid; grid-template-columns: 1fr 1fr; gap:4rem; align-items:start;
+  }
+  .about-text p {
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 1.2rem;
+    font-weight:300;
+    font-size:1.02rem;
+  }
+  .about-text p strong { color: var(--text); font-weight:500; }
+  .about-cards { display:flex; flex-direction:column; gap:1rem; }
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.2rem 1.5rem;
+    display:flex; align-items:center; gap:1rem;
+  }
+  .info-card-icon {
+    font-size:1.4rem;
+    width:40px; text-align:center;
+  }
+  .info-card-label {
+    font-family:'DM Mono', monospace;
+    font-size:0.68rem;
+    color: var(--muted);
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    margin-bottom:0.2rem;
+  }
+  .info-card-value { font-size:0.95rem; color:var(--text); }
+
+  /* EXPERIENCE */
+  .exp-timeline { position:relative; }
+  .exp-timeline::before {
+    content:'';
+    position:absolute; left:0; top:0; bottom:0;
+    width:1px; background: var(--border);
+  }
+  .exp-item {
+    padding-left: 2.5rem;
+    margin-bottom: 3rem;
+    position:relative;
+  }
+  .exp-item::before {
+    content:'';
+    position:absolute; left:-5px; top:6px;
+    width:10px; height:10px;
+    background: var(--gold);
+    border-radius:50%;
+    box-shadow: 0 0 15px rgba(201,168,76,0.5);
+  }
+  .exp-period {
+    font-family:'DM Mono', monospace;
+    font-size:0.72rem;
+    color: var(--gold);
+    letter-spacing:0.1em;
+    margin-bottom:0.4rem;
+  }
+  .exp-title {
+    font-family:'Playfair Display', serif;
+    font-size:1.3rem;
+    margin-bottom:0.2rem;
+  }
+  .exp-company {
+    color: var(--muted);
+    font-size:0.9rem;
+    margin-bottom:1rem;
+  }
+  .exp-bullets { list-style:none; }
+  .exp-bullets li {
+    color: var(--muted);
+    font-size:0.95rem;
+    line-height:1.7;
+    padding-left:1.2rem;
+    position:relative;
+    margin-bottom:0.4rem;
+    font-weight:300;
+  }
+  .exp-bullets li::before {
+    content:'▸';
+    position:absolute; left:0;
+    color: var(--gold);
+    font-size:0.8rem;
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:1.5rem;
+  }
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius:4px;
+    padding: 1.5rem;
+    transition: all 0.3s;
+  }
+  .skill-card:hover {
+    border-color: var(--gold);
+    transform:translateY(-3px);
+    box-shadow: 0 8px 30px rgba(201,168,76,0.1);
+  }
+  .skill-card-title {
+    font-family:'DM Mono', monospace;
+    font-size:0.75rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color: var(--gold);
+    margin-bottom:1rem;
+  }
+  .skill-tags { display:flex; flex-wrap:wrap; gap:0.5rem; }
+  .skill-tag {
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.15);
+    color: var(--text);
+    font-size:0.8rem;
+    padding:0.3rem 0.8rem;
+    border-radius:2px;
+    font-family:'DM Mono', monospace;
+  }
+
+  /* PROJECTS */
+  .projects-grid {
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:1.5rem;
+  }
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius:4px;
+    padding:2rem;
+    transition: all 0.3s;
+    position:relative;
+    overflow:hidden;
+  }
+  .project-card::after {
+    content:'';
+    position:absolute; top:0; left:0; right:0;
+    height:2px;
+    background: linear-gradient(90deg, var(--gold), var(--accent));
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  .project-card:hover::after { transform: scaleX(1); }
+  .project-card:hover { border-color: rgba(201,168,76,0.4); transform:translateY(-4px); }
+  .project-num {
+    font-family:'Playfair Display', serif;
+    font-size:3rem;
+    color: rgba(201,168,76,0.1);
+    font-weight:900;
+    line-height:1;
+    margin-bottom:1rem;
+  }
+  .project-name {
+    font-family:'Playfair Display', serif;
+    font-size:1.2rem;
+    margin-bottom:0.5rem;
+  }
+  .project-desc {
+    color: var(--muted);
+    font-size:0.9rem;
+    line-height:1.7;
+    font-weight:300;
+    margin-bottom:1rem;
+  }
+  .project-tech { display:flex; flex-wrap:wrap; gap:0.4rem; }
+  .tech-badge {
+    font-family:'DM Mono', monospace;
+    font-size:0.68rem;
+    color: var(--accent);
+    border: 1px solid rgba(79,195,195,0.25);
+    padding:0.2rem 0.6rem;
+    border-radius:2px;
+  }
+
+  /* CERTIFICATIONS */
+  .certs-grid {
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:1rem;
+  }
+  .cert-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius:4px;
+    padding:1.2rem 1.5rem;
+    display:flex; align-items:center; gap:1rem;
+    transition: all 0.3s;
+  }
+  .cert-item:hover { border-color: var(--gold); }
+  .cert-icon { color: var(--gold); font-size:1.2rem; flex-shrink:0; }
+  .cert-name { font-size:0.88rem; line-height:1.4; }
+
+  /* CONTACT */
+  .contact-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .contact-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;
+  }
+  .contact-text h2 {
+    font-family:'Playfair Display', serif;
+    font-size:2.5rem;
+    margin-bottom:1rem;
+  }
+  .contact-text p { color:var(--muted); line-height:1.8; font-weight:300; }
+  .contact-links { display:flex; flex-direction:column; gap:1rem; }
+  .contact-link {
+    display:flex; align-items:center; gap:1rem;
+    background: var(--card);
+    border:1px solid var(--border);
+    padding:1.2rem 1.5rem;
+    border-radius:4px;
+    text-decoration:none;
+    transition: all 0.3s;
+    color: var(--text);
+  }
+  .contact-link:hover { border-color:var(--gold); transform:translateX(4px); }
+  .contact-link-icon { color:var(--gold); font-size:1.1rem; width:20px; }
+  .contact-link-label {
+    font-family:'DM Mono', monospace;
+    font-size:0.7rem;
+    color:var(--muted);
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    display:block;
+    margin-bottom:0.2rem;
+  }
+  .contact-link-value { font-size:0.95rem; }
+
+  /* FOOTER */
+  footer {
+    text-align:center;
+    padding:2rem 4rem;
+    font-family:'DM Mono', monospace;
+    font-size:0.72rem;
+    color: var(--muted);
+    letter-spacing:0.05em;
+    border-top:1px solid var(--border);
+  }
+
+  /* DIVIDER */
+  .divider {
+    width:60px; height:2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin-bottom:1.5rem;
+  }
+
+  /* RESPONSIVE */
+  @media(max-width:768px) {
+    nav { padding:1rem 1.5rem; }
+    .nav-links { display:none; }
+    section { padding:4rem 1.5rem; }
+    .hero { padding:6rem 1.5rem 3rem; }
+    .about-grid, .contact-grid { grid-template-columns:1fr; gap:2rem; }
+    .hero-stats { gap:1.5rem; flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Tarun Deep</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+  <div class="hero-content">
+    <div class="hero-tag">⬡ Finance · Crypto Ops · Risk & Compliance</div>
+    <h1>Tarun<br/><span>Deep</span></h1>
+    <p class="hero-sub">Wealth Management Associate specializing in crypto transaction monitoring, fraud detection, AML/KYC compliance, and financial analysis. MBA Finance candidate with hands-on fintech experience.</p>
+    <div class="hero-cta">
+      <a href="#contact" class="btn btn-primary">Get In Touch</a>
+      <a href="#experience" class="btn btn-outline">View Experience</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">2+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div>
+        <div class="stat-num">3</div>
+        <div class="stat-label">Key Projects</div>
+      </div>
+      <div>
+        <div class="stat-num">9</div>
+        <div class="stat-label">Certifications</div>
+      </div>
+      <div>
+        <div class="stat-num">MBA</div>
+        <div class="stat-label">Finance (In Progress)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-tag">01 — About</div>
+  <div class="section-title">Who I <span>Am</span></div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm a <strong>Finance & Operations professional</strong> currently working as a Wealth Management Associate at Trade Republic (Gurugram), where I handle crypto transaction monitoring, fraud analysis, and L1 operations for European clients.</p>
+      <p>My background blends <strong>financial analysis</strong> with <strong>technical operations</strong> — from evaluating mutual funds and building DCF models to detecting anomalies in blockchain transaction data and managing AML/KYC compliance workflows.</p>
+      <p>I'm pursuing my <strong>PGDM in Finance from FIIB</strong> and hold certifications in Financial Modelling, Power BI, Excel, and VBA — equipping me for roles across Financial Analysis, Credit Risk, Fraud Detection, and Crypto Operations.</p>
+    </div>
+    <div class="about-cards">
+      <div class="info-card">
+        <div class="info-card-icon">📍</div>
+        <div>
+          <div class="info-card-label">Location</div>
+          <div class="info-card-value">Gurugram, Haryana, India</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🎓</div>
+        <div>
+          <div class="info-card-label">Education</div>
+          <div class="info-card-value">PGDM Finance — FIIB (2024–2026)</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">💼</div>
+        <div>
+          <div class="info-card-label">Current Role</div>
+          <div class="info-card-value">Wealth Management Associate @ Trade Republic</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">📧</div>
+        <div>
+          <div class="info-card-label">Email</div>
+          <div class="info-card-value">tarundeep8797@gmail.com</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">📱</div>
+        <div>
+          <div class="info-card-label">Phone</div>
+          <div class="info-card-value">+91-7482007592</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" style="background:var(--surface);">
+  <div class="section-tag">02 — Experience</div>
+  <div class="section-title">Work <span>History</span></div>
+  <div class="exp-timeline">
+
+    <div class="exp-item">
+      <div class="exp-period">MAR 2026 — PRESENT</div>
+      <div class="exp-title">Wealth Management Associate</div>
+      <div class="exp-company">Trade Republic · Gurugram, Haryana, India · On-site</div>
+      <ul class="exp-bullets">
+        <li>Monitor and verify cryptocurrency transactions using transaction hash tracking to ensure accuracy and regulatory compliance</li>
+        <li>Conduct fraud analysis to detect suspicious transaction patterns and anomalies, mitigating operational risk for European clients</li>
+        <li>Perform AML/KYC transaction monitoring and escalate high-risk cases in line with compliance standards</li>
+        <li>Manage and close L1 operations tickets efficiently, ensuring SLA adherence and accurate issue resolution</li>
+        <li>Support staking operations and validate blockchain-based transactions for European wealth management clients</li>
+        <li>Collaborate with cross-functional teams to maintain data accuracy, operational integrity, and client trust</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-period">APR 2025 — JUN 2025</div>
+      <div class="exp-title">Finance Intern</div>
+      <div class="exp-company">The Gainers · Internship</div>
+      <ul class="exp-bullets">
+        <li>Conducted investment research and portfolio analysis using risk-return metrics to support fund evaluation</li>
+        <li>Evaluated mutual funds and equity performance using financial indicators, return trends, and comparative analysis</li>
+        <li>Assisted in asset allocation, SIP planning, and report preparation based on client objectives and risk appetite</li>
+        <li>Performed market research, financial data analysis, and investment product review to support portfolio decisions</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-period">AUG 2022 — AUG 2023</div>
+      <div class="exp-title">Associate Domain Support Specialist</div>
+      <div class="exp-company">Ericsson Global Service India Pvt Ltd</div>
+      <ul class="exp-bullets">
+        <li>Analyzed operational and system data to identify anomalies, support data reconciliation, and reduce financial and operational risks</li>
+        <li>Improved process efficiency by optimizing workflows, reducing issue resolution time by 15%</li>
+        <li>Prepared reports to track KPIs, issue trends, and performance metrics for operational decision-making</li>
+        <li>Trained new employees and streamlined onboarding to improve productivity and process consistency</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-tag">03 — Projects</div>
+  <div class="section-title">Key <span>Projects</span></div>
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-num">01</div>
+      <div class="project-name">Credit Risk Analysis</div>
+      <div class="project-desc">Assessed customer financial data to identify high-risk profiles, repayment trends, and credit default indicators. Built risk scoring models to classify borrower segments.</div>
+      <div class="project-tech">
+        <span class="tech-badge">Excel</span>
+        <span class="tech-badge">SQL</span>
+        <span class="tech-badge">Risk Modeling</span>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">02</div>
+      <div class="project-name">Fraud Detection Analysis</div>
+      <div class="project-desc">Analyzed transaction-level data to detect suspicious behavior, anomaly patterns, and operational risk signals. Implemented rule-based and statistical detection methods.</div>
+      <div class="project-tech">
+        <span class="tech-badge">Python</span>
+        <span class="tech-badge">SQL</span>
+        <span class="tech-badge">Anomaly Detection</span>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">03</div>
+      <div class="project-name">Financial Modeling & Valuation (DCF)</div>
+      <div class="project-desc">Built valuation and cash flow projection models using DCF methodology. Performed sensitivity analysis on key assumptions including WACC, growth rates, and terminal value.</div>
+      <div class="project-tech">
+        <span class="tech-badge">Excel</span>
+        <span class="tech-badge">DCF</span>
+        <span class="tech-badge">Sensitivity Analysis</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" style="background:var(--surface);">
+  <div class="section-tag">04 — Skills</div>
+  <div class="section-title">Technical <span>Expertise</span></div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-card-title">🔐 Compliance & Risk</div>
+      <div class="skill-tags">
+        <span class="skill-tag">AML</span>
+        <span class="skill-tag">KYC</span>
+        <span class="skill-tag">Transaction Monitoring</span>
+        <span class="skill-tag">Fraud Detection</span>
+        <span class="skill-tag">Credit Risk</span>
+        <span class="skill-tag">Operational Risk</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-title">₿ Crypto Operations</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Blockchain</span>
+        <span class="skill-tag">Tx Hash Monitoring</span>
+        <span class="skill-tag">Staking</span>
+        <span class="skill-tag">L1 Operations</span>
+        <span class="skill-tag">Crypto Compliance</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-title">📊 Financial Analysis</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Financial Modeling</span>
+        <span class="skill-tag">DCF Valuation</span>
+        <span class="skill-tag">Portfolio Mgmt</span>
+        <span class="skill-tag">Ratio Analysis</span>
+        <span class="skill-tag">Forecasting</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-title">🛠 Tools & Tech</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Advanced Excel</span>
+        <span class="skill-tag">SQL</span>
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">Power BI</span>
+        <span class="skill-tag">VBA</span>
+        <span class="skill-tag">Pivot Tables</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-title">💼 Wealth Management</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Mutual Funds</span>
+        <span class="skill-tag">SIP Planning</span>
+        <span class="skill-tag">Asset Allocation</span>
+        <span class="skill-tag">Investment Research</span>
+        <span class="skill-tag">Equity Analysis</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-title">📋 Operations</div>
+      <div class="skill-tags">
+        <span class="skill-tag">KPI Tracking</span>
+        <span class="skill-tag">Data Reconciliation</span>
+        <span class="skill-tag">Report Preparation</span>
+        <span class="skill-tag">Ticket Management</span>
+        <span class="skill-tag">SLA Adherence</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="section-tag">05 — Certifications</div>
+  <div class="section-title">Credentials & <span>Courses</span></div>
+  <div class="certs-grid">
+    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Certificate in Financial Modelling & Valuation</div></div>
+    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Financial Modelling — Bonus Case Studies</div></div>
+    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Power BI</div></div>
+    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Microsoft 365 Excel (Fortune)</div></div>
+    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">MS Excel Essentials</div></div>
+    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Visual Basic for Applications (VBA)</div></div>
+    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Finance Foundation</div></div>
+    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Accounting for Non-Accountants</div></div>
+    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">AI/ML Basic Training</div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-grid">
+    <div class="contact-text">
+      <div class="section-tag">06 — Contact</div>
+      <h2>Let's <span style="color:var(--gold)">Connect</span></h2>
+      <div class="divider"></div>
+      <p>Open to opportunities in Financial Analysis, Credit & Risk, Fraud Detection, Crypto Operations, and Wealth Management. Feel free to reach out.</p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:tarundeep8797@gmail.com" class="contact-link">
+        <div class="contact-link-icon">✉</div>
+        <div>
+          <span class="contact-link-label">Email</span>
+          <span class="contact-link-value">tarundeep8797@gmail.com</span>
+        </div>
+      </a>
+      <a href="tel:+917482007592" class="contact-link">
+        <div class="contact-link-icon">📱</div>
+        <div>
+          <span class="contact-link-label">Phone</span>
+          <span class="contact-link-value">+91-7482007592</span>
+        </div>
+      </a>
+      <a href="https://linkedin.com" target="_blank" class="contact-link">
+        <div class="contact-link-icon">in</div>
+        <div>
+          <span class="contact-link-label">LinkedIn</span>
+          <span class="contact-link-value">linkedin.com/in/tarundeep</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Tarun Deep · Built with intention · Finance & Crypto Operations Professional</p>
+</footer>
+
+</body>
+</html>
