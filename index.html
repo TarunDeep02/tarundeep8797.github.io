@@ -4,463 +4,167 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Tarun Deep — Finance & Crypto Operations</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --card: #1a1a26;
-    --gold: #c9a84c;
-    --gold-light: #e8c97a;
-    --gold-dim: rgba(201,168,76,0.15);
-    --text: #e8e8f0;
-    --muted: #7a7a9a;
-    --accent: #4fc3c3;
-    --border: rgba(201,168,76,0.2);
-  }
-  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    overflow-x: hidden;
-  }
+:root {
+  --ink: #0d0d0d;
+  --paper: #f5f2ed;
+  --warm: #f0ebe2;
+  --card-bg: #ffffff;
+  --accent: #1a1a2e;
+  --copper: #b5651d;
+  --copper-light: #d4843a;
+  --copper-dim: rgba(181,101,29,0.1);
+  --teal: #1a6b6b;
+  --muted: #7a746c;
+  --border: rgba(181,101,29,0.18);
+  --shadow: 0 4px 40px rgba(13,13,13,0.08);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--paper); color:var(--ink); font-family:'Syne',sans-serif; overflow-x:hidden; cursor:none; }
+.cursor { width:12px; height:12px; background:var(--copper); border-radius:50%; position:fixed; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .3s,height .3s; mix-blend-mode:multiply; }
+.cursor-ring { width:36px; height:36px; border:1px solid var(--copper); border-radius:50%; position:fixed; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); opacity:.5; }
+body::after { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events:none; z-index:9000; }
 
-  /* NOISE TEXTURE */
-  body::before {
-    content:'';
-    position:fixed; inset:0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events:none; z-index:0; opacity:0.4;
-  }
+/* NAV */
+nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:1.4rem 5rem; background:rgba(245,242,237,0.92); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); }
+.nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:600; color:var(--ink); }
+.nav-logo span { color:var(--copper); font-style:italic; }
+.nav-links { display:flex; gap:2.5rem; list-style:none; }
+.nav-links a { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--muted); text-decoration:none; letter-spacing:.12em; text-transform:uppercase; transition:color .3s; }
+.nav-links a:hover { color:var(--copper); }
+.nav-cta { font-family:'JetBrains Mono',monospace; font-size:.7rem; padding:.6rem 1.4rem; background:var(--ink); color:var(--paper); text-decoration:none; letter-spacing:.1em; text-transform:uppercase; border-radius:1px; transition:background .3s; }
+.nav-cta:hover { background:var(--copper); }
 
-  /* NAV */
-  nav {
-    position: fixed; top:0; left:0; right:0; z-index:100;
-    display:flex; justify-content:space-between; align-items:center;
-    padding: 1.2rem 4rem;
-    background: rgba(10,10,15,0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    color: var(--gold);
-    letter-spacing: 0.05em;
-  }
-  .nav-links { display:flex; gap:2rem; list-style:none; }
-  .nav-links a {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    text-decoration:none;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    transition: color 0.3s;
-  }
-  .nav-links a:hover { color: var(--gold); }
+/* HERO */
+.hero { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; padding-top:80px; overflow:hidden; }
+.hero-left { padding:6rem 4rem 4rem 5rem; display:flex; flex-direction:column; justify-content:center; }
+.hero-right { background:var(--accent); position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.hero-right-pattern { position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(181,101,29,.07) 39px,rgba(181,101,29,.07) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(181,101,29,.07) 39px,rgba(181,101,29,.07) 40px); }
+.hero-initials { font-family:'Cormorant Garamond',serif; font-size:14rem; font-weight:300; color:rgba(181,101,29,.12); line-height:1; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); letter-spacing:-.05em; pointer-events:none; user-select:none; }
+.hero-right-stats { position:absolute; bottom:3rem; left:0; right:0; display:flex; justify-content:center; gap:3rem; }
+.hero-stat-num { font-family:'Cormorant Garamond',serif; font-size:2.5rem; font-weight:600; color:var(--copper); line-height:1; text-align:center; }
+.hero-stat-label { font-family:'JetBrains Mono',monospace; font-size:.6rem; color:rgba(245,242,237,.4); letter-spacing:.1em; text-transform:uppercase; margin-top:.3rem; text-align:center; }
+.hero-eyebrow { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--copper); letter-spacing:.15em; text-transform:uppercase; margin-bottom:1.2rem; animation:fadeUp .7s ease both; }
+.hero h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(3.5rem,5vw,5rem); font-weight:300; line-height:1.08; margin-bottom:1.8rem; animation:fadeUp .7s .1s ease both; }
+.hero h1 em { font-style:italic; color:var(--copper); }
+.hero-desc { font-size:1rem; color:var(--muted); line-height:1.8; max-width:460px; margin-bottom:2.5rem; animation:fadeUp .7s .2s ease both; }
+.hero-actions { display:flex; gap:1rem; flex-wrap:wrap; animation:fadeUp .7s .3s ease both; }
+.btn-dark { padding:.9rem 2.2rem; background:var(--ink); color:var(--paper); font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; border-radius:1px; transition:background .3s,transform .2s; display:inline-block; }
+.btn-dark:hover { background:var(--copper); transform:translateY(-2px); }
+.btn-ghost { padding:.9rem 2.2rem; background:transparent; color:var(--ink); font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; border:1px solid rgba(13,13,13,.2); border-radius:1px; transition:all .3s; display:inline-block; }
+.btn-ghost:hover { border-color:var(--copper); color:var(--copper); }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex; align-items: center;
-    padding: 8rem 4rem 4rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-bg-circle {
-    position:absolute;
-    border-radius:50%;
-    filter: blur(120px);
-    pointer-events:none;
-  }
-  .hero-bg-circle.c1 {
-    width:600px; height:600px;
-    background: radial-gradient(circle, rgba(201,168,76,0.12), transparent 70%);
-    top:-100px; right:-100px;
-    animation: pulse 8s ease-in-out infinite;
-  }
-  .hero-bg-circle.c2 {
-    width:400px; height:400px;
-    background: radial-gradient(circle, rgba(79,195,195,0.08), transparent 70%);
-    bottom:0; left:-50px;
-    animation: pulse 10s ease-in-out infinite reverse;
-  }
-  @keyframes pulse {
-    0%,100% { transform: scale(1); opacity:0.8; }
-    50% { transform: scale(1.1); opacity:1; }
-  }
-  .hero-content { position:relative; z-index:1; max-width:800px; }
-  .hero-tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold);
-    border: 1px solid var(--border);
-    display: inline-block;
-    padding: 0.4rem 1rem;
-    border-radius: 2px;
-    margin-bottom: 1.5rem;
-    animation: fadeUp 0.8s ease both;
-  }
-  .hero h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(3rem, 7vw, 5.5rem);
-    font-weight: 900;
-    line-height: 1.05;
-    margin-bottom: 1.5rem;
-    animation: fadeUp 0.8s 0.1s ease both;
-  }
-  .hero h1 span { color: var(--gold); }
-  .hero-sub {
-    font-size: 1.1rem;
-    color: var(--muted);
-    line-height: 1.7;
-    max-width: 560px;
-    margin-bottom: 2.5rem;
-    animation: fadeUp 0.8s 0.2s ease both;
-    font-weight: 300;
-  }
-  .hero-cta {
-    display:flex; gap:1rem; flex-wrap:wrap;
-    animation: fadeUp 0.8s 0.3s ease both;
-  }
-  .btn {
-    padding: 0.85rem 2rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    text-decoration: none;
-    border-radius: 2px;
-    transition: all 0.3s;
-    cursor: pointer;
-    border: none;
-  }
-  .btn-primary {
-    background: var(--gold);
-    color: #0a0a0f;
-    font-weight: 500;
-  }
-  .btn-primary:hover { background: var(--gold-light); transform:translateY(-2px); }
-  .btn-outline {
-    background: transparent;
-    color: var(--gold);
-    border: 1px solid var(--border);
-  }
-  .btn-outline:hover { border-color: var(--gold); background: var(--gold-dim); }
+/* MARQUEE */
+.marquee-wrap { background:var(--ink); padding:1rem 0; overflow:hidden; white-space:nowrap; }
+.marquee-inner { display:inline-block; animation:marquee 28s linear infinite; }
+.marquee-item { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase; color:rgba(245,242,237,.35); margin:0 2rem; }
+.marquee-item span { color:var(--copper); margin-right:2rem; }
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-  .hero-stats {
-    display:flex; gap:3rem; margin-top: 4rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
-    animation: fadeUp 0.8s 0.4s ease both;
-  }
-  .stat-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight:700;
-    color: var(--gold);
-  }
-  .stat-label {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top:0.2rem;
-    font-family: 'DM Mono', monospace;
-    letter-spacing:0.05em;
-  }
+/* SECTIONS */
+section { padding:7rem 5rem; }
+.sec-label { font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; color:var(--copper); margin-bottom:.6rem; display:flex; align-items:center; gap:.8rem; }
+.sec-label::after { content:''; flex:1; max-width:60px; height:1px; background:var(--copper); opacity:.4; }
+.sec-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2.2rem,3.5vw,3.2rem); font-weight:400; line-height:1.15; margin-bottom:3.5rem; }
+.sec-title em { font-style:italic; color:var(--copper); }
 
-  @keyframes fadeUp {
-    from { opacity:0; transform:translateY(24px); }
-    to { opacity:1; transform:translateY(0); }
-  }
+/* ABOUT */
+.about-layout { display:grid; grid-template-columns:3fr 2fr; gap:5rem; align-items:start; }
+.about-body p { font-size:1.05rem; color:var(--muted); line-height:1.9; margin-bottom:1.2rem; }
+.about-body p strong { color:var(--ink); font-weight:600; }
+.about-aside { display:flex; flex-direction:column; gap:.8rem; }
+.aside-card { background:var(--card-bg); border:1px solid var(--border); padding:1.2rem 1.4rem; border-radius:2px; box-shadow:var(--shadow); display:flex; gap:1rem; align-items:center; transition:transform .3s; }
+.aside-card:hover { transform:translateX(4px); }
+.aside-card-icon { font-size:1.2rem; flex-shrink:0; }
+.aside-label { font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:.2rem; }
+.aside-val { font-size:.9rem; font-weight:500; }
 
-  /* SECTIONS */
-  section { padding: 6rem 4rem; position:relative; z-index:1; }
-  .section-tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 0.8rem;
-  }
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 700;
-    margin-bottom: 3rem;
-    line-height: 1.2;
-  }
-  .section-title span { color: var(--gold); }
+/* EXPERIENCE */
+.exp-section { background:var(--warm); }
+.exp-row { display:grid; grid-template-columns:200px 1fr; gap:3rem; padding:3rem 0; border-top:1px solid var(--border); }
+.exp-row:last-child { border-bottom:1px solid var(--border); }
+.exp-period { font-family:'JetBrains Mono',monospace; font-size:.68rem; color:var(--copper); letter-spacing:.1em; text-transform:uppercase; margin-bottom:.5rem; }
+.exp-co { font-size:.85rem; color:var(--muted); }
+.exp-badge { display:inline-block; margin-top:.6rem; font-family:'JetBrains Mono',monospace; font-size:.6rem; padding:.3rem .7rem; background:var(--copper-dim); color:var(--copper); border:1px solid var(--border); border-radius:1px; letter-spacing:.08em; }
+.exp-content-title { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:600; margin-bottom:1.2rem; line-height:1.2; }
+.exp-points { list-style:none; display:flex; flex-direction:column; gap:.6rem; }
+.exp-points li { font-size:.95rem; color:var(--muted); line-height:1.7; padding-left:1.4rem; position:relative; }
+.exp-points li::before { content:'—'; position:absolute; left:0; color:var(--copper); font-size:.8rem; }
 
-  /* ABOUT */
-  .about-grid {
-    display:grid; grid-template-columns: 1fr 1fr; gap:4rem; align-items:start;
-  }
-  .about-text p {
-    color: var(--muted);
-    line-height: 1.9;
-    margin-bottom: 1.2rem;
-    font-weight:300;
-    font-size:1.02rem;
-  }
-  .about-text p strong { color: var(--text); font-weight:500; }
-  .about-cards { display:flex; flex-direction:column; gap:1rem; }
-  .info-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 1.2rem 1.5rem;
-    display:flex; align-items:center; gap:1rem;
-  }
-  .info-card-icon {
-    font-size:1.4rem;
-    width:40px; text-align:center;
-  }
-  .info-card-label {
-    font-family:'DM Mono', monospace;
-    font-size:0.68rem;
-    color: var(--muted);
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    margin-bottom:0.2rem;
-  }
-  .info-card-value { font-size:0.95rem; color:var(--text); }
+/* PROJECTS */
+.projects-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+.proj-card { background:var(--card-bg); border:1px solid var(--border); padding:2.5rem 2rem; border-radius:2px; position:relative; overflow:hidden; box-shadow:var(--shadow); transition:all .4s; }
+.proj-card:hover { transform:translateY(-6px); box-shadow:0 20px 60px rgba(181,101,29,.12); border-color:var(--copper); }
+.proj-num { font-family:'Cormorant Garamond',serif; font-size:5rem; font-weight:300; color:rgba(181,101,29,.06); line-height:1; position:absolute; top:1rem; right:1.5rem; }
+.proj-name { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:600; margin-bottom:.8rem; line-height:1.2; }
+.proj-desc { font-size:.88rem; color:var(--muted); line-height:1.75; margin-bottom:1.5rem; }
+.proj-stack { display:flex; flex-wrap:wrap; gap:.4rem; }
+.stack-tag { font-family:'JetBrains Mono',monospace; font-size:.65rem; padding:.25rem .7rem; background:var(--warm); border:1px solid var(--border); color:var(--teal); border-radius:1px; }
 
-  /* EXPERIENCE */
-  .exp-timeline { position:relative; }
-  .exp-timeline::before {
-    content:'';
-    position:absolute; left:0; top:0; bottom:0;
-    width:1px; background: var(--border);
-  }
-  .exp-item {
-    padding-left: 2.5rem;
-    margin-bottom: 3rem;
-    position:relative;
-  }
-  .exp-item::before {
-    content:'';
-    position:absolute; left:-5px; top:6px;
-    width:10px; height:10px;
-    background: var(--gold);
-    border-radius:50%;
-    box-shadow: 0 0 15px rgba(201,168,76,0.5);
-  }
-  .exp-period {
-    font-family:'DM Mono', monospace;
-    font-size:0.72rem;
-    color: var(--gold);
-    letter-spacing:0.1em;
-    margin-bottom:0.4rem;
-  }
-  .exp-title {
-    font-family:'Playfair Display', serif;
-    font-size:1.3rem;
-    margin-bottom:0.2rem;
-  }
-  .exp-company {
-    color: var(--muted);
-    font-size:0.9rem;
-    margin-bottom:1rem;
-  }
-  .exp-bullets { list-style:none; }
-  .exp-bullets li {
-    color: var(--muted);
-    font-size:0.95rem;
-    line-height:1.7;
-    padding-left:1.2rem;
-    position:relative;
-    margin-bottom:0.4rem;
-    font-weight:300;
-  }
-  .exp-bullets li::before {
-    content:'▸';
-    position:absolute; left:0;
-    color: var(--gold);
-    font-size:0.8rem;
-  }
+/* SKILLS */
+.skills-section { background:var(--ink); }
+.skills-section .sec-label { color:var(--copper); }
+.skills-section .sec-title { color:var(--paper); }
+.skills-section .sec-title em { color:var(--copper); }
+.skills-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(245,242,237,.05); border:1px solid rgba(245,242,237,.05); }
+.skill-block { background:var(--ink); padding:2rem; transition:background .3s; }
+.skill-block:hover { background:#141420; }
+.skill-block-title { font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.15em; text-transform:uppercase; color:var(--copper); margin-bottom:1.2rem; padding-bottom:.8rem; border-bottom:1px solid rgba(181,101,29,.2); }
+.skill-list { list-style:none; display:flex; flex-direction:column; gap:.5rem; }
+.skill-list li { font-size:.88rem; color:rgba(245,242,237,.55); padding-left:1rem; position:relative; }
+.skill-list li::before { content:'▸'; position:absolute; left:0; color:var(--copper); font-size:.7rem; }
 
-  /* SKILLS */
-  .skills-grid {
-    display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:1.5rem;
-  }
-  .skill-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius:4px;
-    padding: 1.5rem;
-    transition: all 0.3s;
-  }
-  .skill-card:hover {
-    border-color: var(--gold);
-    transform:translateY(-3px);
-    box-shadow: 0 8px 30px rgba(201,168,76,0.1);
-  }
-  .skill-card-title {
-    font-family:'DM Mono', monospace;
-    font-size:0.75rem;
-    letter-spacing:0.12em;
-    text-transform:uppercase;
-    color: var(--gold);
-    margin-bottom:1rem;
-  }
-  .skill-tags { display:flex; flex-wrap:wrap; gap:0.5rem; }
-  .skill-tag {
-    background: rgba(201,168,76,0.08);
-    border: 1px solid rgba(201,168,76,0.15);
-    color: var(--text);
-    font-size:0.8rem;
-    padding:0.3rem 0.8rem;
-    border-radius:2px;
-    font-family:'DM Mono', monospace;
-  }
+/* CERTS */
+.certs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
+.cert-card { background:var(--card-bg); border:1px solid var(--border); padding:1.2rem 1.5rem; border-radius:2px; display:flex; align-items:center; gap:1rem; box-shadow:var(--shadow); transition:all .3s; }
+.cert-card:hover { border-color:var(--copper); transform:translateY(-2px); }
+.cert-dot { width:8px; height:8px; background:var(--copper); border-radius:50%; flex-shrink:0; }
+.cert-name { font-size:.88rem; font-weight:500; line-height:1.4; }
 
-  /* PROJECTS */
-  .projects-grid {
-    display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:1.5rem;
-  }
-  .project-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius:4px;
-    padding:2rem;
-    transition: all 0.3s;
-    position:relative;
-    overflow:hidden;
-  }
-  .project-card::after {
-    content:'';
-    position:absolute; top:0; left:0; right:0;
-    height:2px;
-    background: linear-gradient(90deg, var(--gold), var(--accent));
-    transform: scaleX(0);
-    transition: transform 0.3s;
-  }
-  .project-card:hover::after { transform: scaleX(1); }
-  .project-card:hover { border-color: rgba(201,168,76,0.4); transform:translateY(-4px); }
-  .project-num {
-    font-family:'Playfair Display', serif;
-    font-size:3rem;
-    color: rgba(201,168,76,0.1);
-    font-weight:900;
-    line-height:1;
-    margin-bottom:1rem;
-  }
-  .project-name {
-    font-family:'Playfair Display', serif;
-    font-size:1.2rem;
-    margin-bottom:0.5rem;
-  }
-  .project-desc {
-    color: var(--muted);
-    font-size:0.9rem;
-    line-height:1.7;
-    font-weight:300;
-    margin-bottom:1rem;
-  }
-  .project-tech { display:flex; flex-wrap:wrap; gap:0.4rem; }
-  .tech-badge {
-    font-family:'DM Mono', monospace;
-    font-size:0.68rem;
-    color: var(--accent);
-    border: 1px solid rgba(79,195,195,0.25);
-    padding:0.2rem 0.6rem;
-    border-radius:2px;
-  }
+/* CONTACT */
+.contact-section { background:var(--warm); border-top:1px solid var(--border); }
+.contact-layout { display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center; }
+.contact-left h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.5rem,4vw,3.5rem); font-weight:300; line-height:1.15; margin-bottom:1.2rem; }
+.contact-left h2 em { font-style:italic; color:var(--copper); }
+.contact-left p { color:var(--muted); font-size:1rem; line-height:1.8; }
+.contact-links-stack { display:flex; flex-direction:column; gap:1rem; }
+.c-link { display:flex; align-items:center; gap:1.2rem; background:var(--card-bg); border:1px solid var(--border); padding:1.3rem 1.6rem; border-radius:2px; text-decoration:none; color:var(--ink); box-shadow:var(--shadow); transition:all .3s; }
+.c-link:hover { border-color:var(--copper); transform:translateX(6px); box-shadow:0 8px 30px rgba(181,101,29,.1); }
+.c-link-icon { width:40px; height:40px; background:var(--copper-dim); border:1px solid var(--border); border-radius:1px; display:flex; align-items:center; justify-content:center; font-size:.9rem; flex-shrink:0; color:var(--copper); transition:background .3s,color .3s; }
+.c-link:hover .c-link-icon { background:var(--copper); color:white; }
+.c-link-label { font-family:'JetBrains Mono',monospace; font-size:.62rem; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; display:block; margin-bottom:.2rem; }
+.c-link-val { font-size:.92rem; font-weight:500; }
+.c-link-arrow { margin-left:auto; color:var(--muted); font-size:1.1rem; transition:transform .3s,color .3s; }
+.c-link:hover .c-link-arrow { transform:translateX(4px); color:var(--copper); }
 
-  /* CERTIFICATIONS */
-  .certs-grid {
-    display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:1rem;
-  }
-  .cert-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius:4px;
-    padding:1.2rem 1.5rem;
-    display:flex; align-items:center; gap:1rem;
-    transition: all 0.3s;
-  }
-  .cert-item:hover { border-color: var(--gold); }
-  .cert-icon { color: var(--gold); font-size:1.2rem; flex-shrink:0; }
-  .cert-name { font-size:0.88rem; line-height:1.4; }
+footer { background:var(--ink); color:rgba(245,242,237,.3); text-align:center; padding:2rem; font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.08em; }
+footer span { color:var(--copper); }
 
-  /* CONTACT */
-  .contact-section {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-  .contact-grid {
-    display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;
-  }
-  .contact-text h2 {
-    font-family:'Playfair Display', serif;
-    font-size:2.5rem;
-    margin-bottom:1rem;
-  }
-  .contact-text p { color:var(--muted); line-height:1.8; font-weight:300; }
-  .contact-links { display:flex; flex-direction:column; gap:1rem; }
-  .contact-link {
-    display:flex; align-items:center; gap:1rem;
-    background: var(--card);
-    border:1px solid var(--border);
-    padding:1.2rem 1.5rem;
-    border-radius:4px;
-    text-decoration:none;
-    transition: all 0.3s;
-    color: var(--text);
-  }
-  .contact-link:hover { border-color:var(--gold); transform:translateX(4px); }
-  .contact-link-icon { color:var(--gold); font-size:1.1rem; width:20px; }
-  .contact-link-label {
-    font-family:'DM Mono', monospace;
-    font-size:0.7rem;
-    color:var(--muted);
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    display:block;
-    margin-bottom:0.2rem;
-  }
-  .contact-link-value { font-size:0.95rem; }
+.reveal { opacity:0; transform:translateY(28px); transition:opacity .7s ease,transform .7s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
 
-  /* FOOTER */
-  footer {
-    text-align:center;
-    padding:2rem 4rem;
-    font-family:'DM Mono', monospace;
-    font-size:0.72rem;
-    color: var(--muted);
-    letter-spacing:0.05em;
-    border-top:1px solid var(--border);
-  }
-
-  /* DIVIDER */
-  .divider {
-    width:60px; height:2px;
-    background: linear-gradient(90deg, var(--gold), transparent);
-    margin-bottom:1.5rem;
-  }
-
-  /* RESPONSIVE */
-  @media(max-width:768px) {
-    nav { padding:1rem 1.5rem; }
-    .nav-links { display:none; }
-    section { padding:4rem 1.5rem; }
-    .hero { padding:6rem 1.5rem 3rem; }
-    .about-grid, .contact-grid { grid-template-columns:1fr; gap:2rem; }
-    .hero-stats { gap:1.5rem; flex-wrap:wrap; }
-  }
+@media(max-width:900px) {
+  nav { padding:1rem 1.5rem; }
+  .nav-links,.nav-cta { display:none; }
+  section { padding:4rem 1.5rem; }
+  .hero { grid-template-columns:1fr; }
+  .hero-right { display:none; }
+  .hero-left { padding:6rem 1.5rem 3rem; }
+  .about-layout,.contact-layout { grid-template-columns:1fr; gap:2.5rem; }
+  .projects-grid,.skills-grid { grid-template-columns:1fr; }
+  .exp-row { grid-template-columns:1fr; gap:1rem; }
+}
 </style>
 </head>
 <body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
 <nav>
-  <div class="nav-logo">Tarun Deep</div>
+  <div class="nav-logo">Tarun <span>Deep</span></div>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#experience">Experience</a></li>
@@ -468,276 +172,180 @@
     <li><a href="#skills">Skills</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+  <a href="mailto:tarundeep8797@gmail.com" class="nav-cta">Hire Me</a>
 </nav>
 
-<!-- HERO -->
 <section class="hero" id="home">
-  <div class="hero-bg-circle c1"></div>
-  <div class="hero-bg-circle c2"></div>
-  <div class="hero-content">
-    <div class="hero-tag">⬡ Finance · Crypto Ops · Risk & Compliance</div>
-    <h1>Tarun<br/><span>Deep</span></h1>
-    <p class="hero-sub">Wealth Management Associate specializing in crypto transaction monitoring, fraud detection, AML/KYC compliance, and financial analysis. MBA Finance candidate with hands-on fintech experience.</p>
-    <div class="hero-cta">
-      <a href="#contact" class="btn btn-primary">Get In Touch</a>
-      <a href="#experience" class="btn btn-outline">View Experience</a>
+  <div class="hero-left">
+    <div class="hero-eyebrow">Available for opportunities</div>
+    <h1>Finance &<br/><em>Crypto Ops</em><br/>Professional</h1>
+    <p class="hero-desc">Wealth Management Associate at Trade Republic specializing in AML/KYC compliance, transaction monitoring, fraud detection, and financial analysis. MBA Finance candidate.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-dark">Get In Touch</a>
+      <a href="#experience" class="btn-ghost">View Experience</a>
     </div>
-    <div class="hero-stats">
-      <div>
-        <div class="stat-num">2+</div>
-        <div class="stat-label">Years Experience</div>
-      </div>
-      <div>
-        <div class="stat-num">3</div>
-        <div class="stat-label">Key Projects</div>
-      </div>
-      <div>
-        <div class="stat-num">9</div>
-        <div class="stat-label">Certifications</div>
-      </div>
-      <div>
-        <div class="stat-num">MBA</div>
-        <div class="stat-label">Finance (In Progress)</div>
-      </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-right-pattern"></div>
+    <div class="hero-initials">TD</div>
+    <div class="hero-right-stats">
+      <div class="hero-stat"><div class="hero-stat-num">2+</div><div class="hero-stat-label">Yrs Experience</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">3</div><div class="hero-stat-label">Projects</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">9</div><div class="hero-stat-label">Certifications</div></div>
     </div>
   </div>
 </section>
 
-<!-- ABOUT -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <span class="marquee-item"><span>✦</span>Transaction Monitoring</span>
+    <span class="marquee-item"><span>✦</span>AML / KYC Compliance</span>
+    <span class="marquee-item"><span>✦</span>Fraud Detection</span>
+    <span class="marquee-item"><span>✦</span>Crypto Operations</span>
+    <span class="marquee-item"><span>✦</span>Financial Modeling</span>
+    <span class="marquee-item"><span>✦</span>DCF Valuation</span>
+    <span class="marquee-item"><span>✦</span>Portfolio Management</span>
+    <span class="marquee-item"><span>✦</span>SQL · Python · Power BI</span>
+    <span class="marquee-item"><span>✦</span>Transaction Monitoring</span>
+    <span class="marquee-item"><span>✦</span>AML / KYC Compliance</span>
+    <span class="marquee-item"><span>✦</span>Fraud Detection</span>
+    <span class="marquee-item"><span>✦</span>Crypto Operations</span>
+    <span class="marquee-item"><span>✦</span>Financial Modeling</span>
+    <span class="marquee-item"><span>✦</span>DCF Valuation</span>
+    <span class="marquee-item"><span>✦</span>Portfolio Management</span>
+    <span class="marquee-item"><span>✦</span>SQL · Python · Power BI</span>
+  </div>
+</div>
+
 <section id="about">
-  <div class="section-tag">01 — About</div>
-  <div class="section-title">Who I <span>Am</span></div>
-  <div class="about-grid">
-    <div class="about-text">
-      <p>I'm a <strong>Finance & Operations professional</strong> currently working as a Wealth Management Associate at Trade Republic (Gurugram), where I handle crypto transaction monitoring, fraud analysis, and L1 operations for European clients.</p>
-      <p>My background blends <strong>financial analysis</strong> with <strong>technical operations</strong> — from evaluating mutual funds and building DCF models to detecting anomalies in blockchain transaction data and managing AML/KYC compliance workflows.</p>
-      <p>I'm pursuing my <strong>PGDM in Finance from FIIB</strong> and hold certifications in Financial Modelling, Power BI, Excel, and VBA — equipping me for roles across Financial Analysis, Credit Risk, Fraud Detection, and Crypto Operations.</p>
+  <div class="reveal"><div class="sec-label">01 — About</div><div class="sec-title">The Person<br/>Behind the <em>Numbers</em></div></div>
+  <div class="about-layout reveal">
+    <div class="about-body">
+      <p>I'm a <strong>Finance & Operations professional</strong> currently working as a Wealth Management Associate at <strong>Trade Republic</strong> (Gurugram), handling crypto transaction monitoring, fraud analysis, and L1 operations for European clients.</p>
+      <p>My background uniquely blends <strong>financial acumen with technical operations</strong> — from building DCF valuation models and evaluating mutual funds to detecting anomalies in blockchain transaction data and ensuring AML/KYC compliance.</p>
+      <p>Pursuing my <strong>PGDM in Finance from FIIB (2024–2026)</strong> with certifications in Financial Modelling, Power BI, Advanced Excel, and VBA — equipped for roles across Financial Analysis, Credit Risk, Fraud Detection, and Crypto Operations.</p>
     </div>
-    <div class="about-cards">
-      <div class="info-card">
-        <div class="info-card-icon">📍</div>
-        <div>
-          <div class="info-card-label">Location</div>
-          <div class="info-card-value">Gurugram, Haryana, India</div>
-        </div>
-      </div>
-      <div class="info-card">
-        <div class="info-card-icon">🎓</div>
-        <div>
-          <div class="info-card-label">Education</div>
-          <div class="info-card-value">PGDM Finance — FIIB (2024–2026)</div>
-        </div>
-      </div>
-      <div class="info-card">
-        <div class="info-card-icon">💼</div>
-        <div>
-          <div class="info-card-label">Current Role</div>
-          <div class="info-card-value">Wealth Management Associate @ Trade Republic</div>
-        </div>
-      </div>
-      <div class="info-card">
-        <div class="info-card-icon">📧</div>
-        <div>
-          <div class="info-card-label">Email</div>
-          <div class="info-card-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2f5b4e5d5a414b4a4a5f171816186f48424e4643014c4042">[email&#160;protected]</a></div>
-        </div>
-      </div>
-
+    <div class="about-aside">
+      <div class="aside-card"><div class="aside-card-icon">📍</div><div><div class="aside-label">Location</div><div class="aside-val">Gurugram, Haryana, India</div></div></div>
+      <div class="aside-card"><div class="aside-card-icon">🎓</div><div><div class="aside-label">Education</div><div class="aside-val">PGDM Finance — FIIB (2024–26)</div></div></div>
+      <div class="aside-card"><div class="aside-card-icon">💼</div><div><div class="aside-label">Current Role</div><div class="aside-val">Wealth Mgmt Associate @ Trade Republic</div></div></div>
+      <div class="aside-card"><div class="aside-card-icon">🎯</div><div><div class="aside-label">Seeking</div><div class="aside-val">Finance · Risk · Fraud · Crypto Ops Roles</div></div></div>
     </div>
   </div>
 </section>
 
-<!-- EXPERIENCE -->
-<section id="experience" style="background:var(--surface);">
-  <div class="section-tag">02 — Experience</div>
-  <div class="section-title">Work <span>History</span></div>
-  <div class="exp-timeline">
-
-    <div class="exp-item">
-      <div class="exp-period">MAR 2026 — PRESENT</div>
-      <div class="exp-title">Wealth Management Associate</div>
-      <div class="exp-company">Trade Republic · Gurugram, Haryana, India · On-site</div>
-      <ul class="exp-bullets">
-        <li>Monitor and verify cryptocurrency transactions using transaction hash tracking to ensure accuracy and regulatory compliance</li>
-        <li>Conduct fraud analysis to detect suspicious transaction patterns and anomalies, mitigating operational risk for European clients</li>
-        <li>Perform AML/KYC transaction monitoring and escalate high-risk cases in line with compliance standards</li>
-        <li>Manage and close L1 operations tickets efficiently, ensuring SLA adherence and accurate issue resolution</li>
-        <li>Support staking operations and validate blockchain-based transactions for European wealth management clients</li>
-        <li>Collaborate with cross-functional teams to maintain data accuracy, operational integrity, and client trust</li>
-      </ul>
+<section class="exp-section" id="experience">
+  <div class="reveal"><div class="sec-label">02 — Experience</div><div class="sec-title">Where I've<br/><em>Made Impact</em></div></div>
+  <div>
+    <div class="exp-row reveal">
+      <div class="exp-meta"><div class="exp-period">Mar 2026 — Present</div><div class="exp-co">Trade Republic</div><div class="exp-co">Gurugram, India</div><span class="exp-badge">Current</span></div>
+      <div><div class="exp-content-title">Wealth Management Associate</div>
+        <ul class="exp-points">
+          <li>Monitor and verify cryptocurrency transactions via transaction hash tracking for European clients</li>
+          <li>Conduct fraud analysis to detect suspicious transaction patterns and anomalies, reducing operational risk</li>
+          <li>Perform AML/KYC transaction monitoring and escalate high-risk cases per compliance standards</li>
+          <li>Manage and close L1 operations tickets ensuring SLA adherence and accurate issue resolution</li>
+          <li>Support staking operations and validate blockchain-based transactions</li>
+        </ul>
+      </div>
     </div>
-
-    <div class="exp-item">
-      <div class="exp-period">APR 2025 — JUN 2025</div>
-      <div class="exp-title">Finance Intern</div>
-      <div class="exp-company">The Gainers · Internship</div>
-      <ul class="exp-bullets">
-        <li>Conducted investment research and portfolio analysis using risk-return metrics to support fund evaluation</li>
-        <li>Evaluated mutual funds and equity performance using financial indicators, return trends, and comparative analysis</li>
-        <li>Assisted in asset allocation, SIP planning, and report preparation based on client objectives and risk appetite</li>
-        <li>Performed market research, financial data analysis, and investment product review to support portfolio decisions</li>
-      </ul>
+    <div class="exp-row reveal">
+      <div class="exp-meta"><div class="exp-period">Apr 2025 — Jun 2025</div><div class="exp-co">The Gainers</div><span class="exp-badge">Internship</span></div>
+      <div><div class="exp-content-title">Finance Intern</div>
+        <ul class="exp-points">
+          <li>Conducted investment research and portfolio analysis using risk-return metrics</li>
+          <li>Evaluated mutual funds and equity performance using financial indicators and comparative analysis</li>
+          <li>Assisted in asset allocation, SIP planning, and report preparation based on client risk appetite</li>
+          <li>Performed market research and financial data analysis to support portfolio decisions</li>
+        </ul>
+      </div>
     </div>
-
-    <div class="exp-item">
-      <div class="exp-period">AUG 2022 — AUG 2023</div>
-      <div class="exp-title">Associate Domain Support Specialist</div>
-      <div class="exp-company">Ericsson Global Service India Pvt Ltd</div>
-      <ul class="exp-bullets">
-        <li>Analyzed operational and system data to identify anomalies, support data reconciliation, and reduce financial and operational risks</li>
-        <li>Improved process efficiency by optimizing workflows, reducing issue resolution time by 15%</li>
-        <li>Prepared reports to track KPIs, issue trends, and performance metrics for operational decision-making</li>
-        <li>Trained new employees and streamlined onboarding to improve productivity and process consistency</li>
-      </ul>
+    <div class="exp-row reveal">
+      <div class="exp-meta"><div class="exp-period">Aug 2022 — Aug 2023</div><div class="exp-co">Ericsson Global Service India</div><span class="exp-badge">Full-time</span></div>
+      <div><div class="exp-content-title">Associate Domain Support Specialist</div>
+        <ul class="exp-points">
+          <li>Analyzed operational data to identify anomalies and support data reconciliation</li>
+          <li>Improved process efficiency — reduced issue resolution time by 15%</li>
+          <li>Prepared KPI tracking reports and performance metrics for operational decision-making</li>
+          <li>Trained new employees and streamlined onboarding to improve productivity</li>
+        </ul>
+      </div>
     </div>
-
   </div>
 </section>
 
-<!-- PROJECTS -->
 <section id="projects">
-  <div class="section-tag">03 — Projects</div>
-  <div class="section-title">Key <span>Projects</span></div>
-  <div class="projects-grid">
-    <div class="project-card">
-      <div class="project-num">01</div>
-      <div class="project-name">Credit Risk Analysis</div>
-      <div class="project-desc">Assessed customer financial data to identify high-risk profiles, repayment trends, and credit default indicators. Built risk scoring models to classify borrower segments.</div>
-      <div class="project-tech">
-        <span class="tech-badge">Excel</span>
-        <span class="tech-badge">SQL</span>
-        <span class="tech-badge">Risk Modeling</span>
-      </div>
-    </div>
-    <div class="project-card">
-      <div class="project-num">02</div>
-      <div class="project-name">Fraud Detection Analysis</div>
-      <div class="project-desc">Analyzed transaction-level data to detect suspicious behavior, anomaly patterns, and operational risk signals. Implemented rule-based and statistical detection methods.</div>
-      <div class="project-tech">
-        <span class="tech-badge">Python</span>
-        <span class="tech-badge">SQL</span>
-        <span class="tech-badge">Anomaly Detection</span>
-      </div>
-    </div>
-    <div class="project-card">
-      <div class="project-num">03</div>
-      <div class="project-name">Financial Modeling & Valuation (DCF)</div>
-      <div class="project-desc">Built valuation and cash flow projection models using DCF methodology. Performed sensitivity analysis on key assumptions including WACC, growth rates, and terminal value.</div>
-      <div class="project-tech">
-        <span class="tech-badge">Excel</span>
-        <span class="tech-badge">DCF</span>
-        <span class="tech-badge">Sensitivity Analysis</span>
-      </div>
-    </div>
+  <div class="reveal"><div class="sec-label">03 — Projects</div><div class="sec-title">Work That<br/><em>Demonstrates</em> Value</div></div>
+  <div class="projects-grid reveal">
+    <div class="proj-card"><div class="proj-num">01</div><div class="proj-name">Credit Risk Analysis</div><div class="proj-desc">Assessed customer financial data to identify high-risk profiles, repayment trends, and credit default indicators. Built risk scoring models to classify borrower segments.</div><div class="proj-stack"><span class="stack-tag">Excel</span><span class="stack-tag">SQL</span><span class="stack-tag">Risk Modeling</span></div></div>
+    <div class="proj-card"><div class="proj-num">02</div><div class="proj-name">Fraud Detection Analysis</div><div class="proj-desc">Analyzed transaction-level data to detect suspicious behavior, anomaly patterns, and operational risk signals using statistical and rule-based detection methods.</div><div class="proj-stack"><span class="stack-tag">Python</span><span class="stack-tag">SQL</span><span class="stack-tag">Anomaly Detection</span></div></div>
+    <div class="proj-card"><div class="proj-num">03</div><div class="proj-name">Financial Modeling & DCF Valuation</div><div class="proj-desc">Built end-to-end valuation and cash flow projection models using DCF methodology with sensitivity analysis on WACC, growth rates, and terminal value assumptions.</div><div class="proj-stack"><span class="stack-tag">Excel</span><span class="stack-tag">DCF</span><span class="stack-tag">Sensitivity Analysis</span></div></div>
   </div>
 </section>
 
-<!-- SKILLS -->
-<section id="skills" style="background:var(--surface);">
-  <div class="section-tag">04 — Skills</div>
-  <div class="section-title">Technical <span>Expertise</span></div>
-  <div class="skills-grid">
-    <div class="skill-card">
-      <div class="skill-card-title">🔐 Compliance & Risk</div>
-      <div class="skill-tags">
-        <span class="skill-tag">AML</span>
-        <span class="skill-tag">KYC</span>
-        <span class="skill-tag">Transaction Monitoring</span>
-        <span class="skill-tag">Fraud Detection</span>
-        <span class="skill-tag">Credit Risk</span>
-        <span class="skill-tag">Operational Risk</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <div class="skill-card-title">₿ Crypto Operations</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Blockchain</span>
-        <span class="skill-tag">Tx Hash Monitoring</span>
-        <span class="skill-tag">Staking</span>
-        <span class="skill-tag">L1 Operations</span>
-        <span class="skill-tag">Crypto Compliance</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <div class="skill-card-title">📊 Financial Analysis</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Financial Modeling</span>
-        <span class="skill-tag">DCF Valuation</span>
-        <span class="skill-tag">Portfolio Mgmt</span>
-        <span class="skill-tag">Ratio Analysis</span>
-        <span class="skill-tag">Forecasting</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <div class="skill-card-title">🛠 Tools & Tech</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Advanced Excel</span>
-        <span class="skill-tag">SQL</span>
-        <span class="skill-tag">Python</span>
-        <span class="skill-tag">Power BI</span>
-        <span class="skill-tag">VBA</span>
-        <span class="skill-tag">Pivot Tables</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <div class="skill-card-title">💼 Wealth Management</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Mutual Funds</span>
-        <span class="skill-tag">SIP Planning</span>
-        <span class="skill-tag">Asset Allocation</span>
-        <span class="skill-tag">Investment Research</span>
-        <span class="skill-tag">Equity Analysis</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <div class="skill-card-title">📋 Operations</div>
-      <div class="skill-tags">
-        <span class="skill-tag">KPI Tracking</span>
-        <span class="skill-tag">Data Reconciliation</span>
-        <span class="skill-tag">Report Preparation</span>
-        <span class="skill-tag">Ticket Management</span>
-        <span class="skill-tag">SLA Adherence</span>
-      </div>
-    </div>
+<section class="skills-section" id="skills">
+  <div class="reveal"><div class="sec-label">04 — Skills</div><div class="sec-title">Tools &<br/><em>Expertise</em></div></div>
+  <div class="skills-grid reveal">
+    <div class="skill-block"><div class="skill-block-title">🔐 Compliance & Risk</div><ul class="skill-list"><li>Anti-Money Laundering (AML)</li><li>KYC / Customer Due Diligence</li><li>Transaction Monitoring</li><li>Fraud Detection & Analysis</li><li>Credit Risk Assessment</li><li>Operational Risk Management</li></ul></div>
+    <div class="skill-block"><div class="skill-block-title">₿ Crypto Operations</div><ul class="skill-list"><li>Blockchain Transaction Monitoring</li><li>Transaction Hash Tracking</li><li>Staking Operations</li><li>L1 Operations & Ticket Mgmt</li><li>Crypto Compliance (EU)</li><li>SLA Adherence</li></ul></div>
+    <div class="skill-block"><div class="skill-block-title">📊 Financial Analysis</div><ul class="skill-list"><li>Financial Modeling & Forecasting</li><li>DCF Valuation</li><li>Portfolio Management</li><li>Ratio & Cash Flow Analysis</li><li>Investment Research</li><li>Mutual Funds & SIP Planning</li></ul></div>
+    <div class="skill-block"><div class="skill-block-title">🛠 Tools & Technology</div><ul class="skill-list"><li>Advanced Excel & VBA</li><li>SQL (PostgreSQL)</li><li>Python (Pandas, NumPy)</li><li>Power BI Dashboards</li><li>Pivot Tables & VLOOKUP</li><li>Data Reconciliation</li></ul></div>
+    <div class="skill-block"><div class="skill-block-title">📋 Operations</div><ul class="skill-list"><li>KPI Tracking & Reporting</li><li>Report Preparation</li><li>Process Optimization</li><li>Cross-functional Collaboration</li><li>Onboarding & Training</li></ul></div>
+    <div class="skill-block"><div class="skill-block-title">💼 Wealth Management</div><ul class="skill-list"><li>Asset Allocation</li><li>Equity Performance Analysis</li><li>Client Risk Profiling</li><li>Investment Product Review</li><li>Market Research</li></ul></div>
   </div>
 </section>
 
-<!-- CERTIFICATIONS -->
 <section id="certifications">
-  <div class="section-tag">05 — Certifications</div>
-  <div class="section-title">Credentials & <span>Courses</span></div>
-  <div class="certs-grid">
-    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Certificate in Financial Modelling & Valuation</div></div>
-    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Financial Modelling — Bonus Case Studies</div></div>
-    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Power BI</div></div>
-    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Microsoft 365 Excel (Fortune)</div></div>
-    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">MS Excel Essentials</div></div>
-    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Visual Basic for Applications (VBA)</div></div>
-    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Finance Foundation</div></div>
-    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">Accounting for Non-Accountants</div></div>
-    <div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-name">AI/ML Basic Training</div></div>
+  <div class="reveal"><div class="sec-label">05 — Certifications</div><div class="sec-title">Credentials &<br/><em>Qualifications</em></div></div>
+  <div class="certs-grid reveal">
+    <div class="cert-card"><div class="cert-dot"></div><div class="cert-name">Certificate in Financial Modelling & Valuation</div></div>
+    <div class="cert-card"><div class="cert-dot"></div><div class="cert-name">Financial Modelling — Bonus Case Studies</div></div>
+    <div class="cert-card"><div class="cert-dot"></div><div class="cert-name">Power BI</div></div>
+    <div class="cert-card"><div class="cert-dot"></div><div class="cert-name">Microsoft 365 Excel (Fortune)</div></div>
+    <div class="cert-card"><div class="cert-dot"></div><div class="cert-name">MS Excel Essentials</div></div>
+    <div class="cert-card"><div class="cert-dot"></div><div class="cert-name">Visual Basic for Applications (VBA)</div></div>
+    <div class="cert-card"><div class="cert-dot"></div><div class="cert-name">Finance Foundation</div></div>
+    <div class="cert-card"><div class="cert-dot"></div><div class="cert-name">Accounting for Non-Accountants</div></div>
+    <div class="cert-card"><div class="cert-dot"></div><div class="cert-name">AI/ML Basic Training</div></div>
   </div>
 </section>
 
-<!-- CONTACT -->
 <section class="contact-section" id="contact">
-  <div class="contact-grid">
-    <div class="contact-text">
-      <div class="section-tag">06 — Contact</div>
-      <h2>Let's <span style="color:var(--gold)">Connect</span></h2>
-      <div class="divider"></div>
-      <p>Open to opportunities in Financial Analysis, Credit & Risk, Fraud Detection, Crypto Operations, and Wealth Management. Feel free to reach out.</p>
+  <div class="contact-layout">
+    <div class="contact-left reveal">
+      <div class="sec-label">06 — Contact</div>
+      <h2>Let's Build<br/>Something <em>Together</em></h2>
+      <p>Open to opportunities in Financial Analysis, Credit & Risk, Fraud Detection, Crypto Operations, and Wealth Management. Feel free to reach out directly.</p>
     </div>
-    <div class="contact-links">
-      <a href="/cdn-cgi/l/email-protection#11657063647f757474612926282651767c70787d3f727e7c" class="contact-link">
-        <div class="contact-link-icon">✉</div>
-        <div>
-          <span class="contact-link-label">Email</span>
-          <span class="contact-link-value"><span class="__cf_email__" data-cfemail="9aeefbe8eff4feffffeaa2ada3addafdf7fbf3f6b4f9f5f7">[email&#160;protected]</span></span>
-        </div>
+    <div class="contact-links-stack reveal">
+      <a href="mailto:tarundeep8797@gmail.com" class="c-link">
+        <div class="c-link-icon">✉</div>
+        <div><span class="c-link-label">Email</span><span class="c-link-val">tarundeep8797@gmail.com</span></div>
+        <div class="c-link-arrow">→</div>
       </a>
+      <a href="https://www.linkedin.com/in/tarun-deep-0862631ba" target="_blank" rel="noopener" class="c-link">
+        <div class="c-link-icon" style="font-weight:700;font-family:sans-serif;font-size:.85rem;">in</div>
+        <div><span class="c-link-label">LinkedIn</span><span class="c-link-val">linkedin.com/in/tarun-deep-0862631ba</span></div>
+        <div class="c-link-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
 
-      <a href="https://linkedin.com" target="_blank" class="contact-link">
-        <div class="contact-link-icon">in</div>
-        <div>
-          <span class="contact-link-label">LinkedIn</spa
+<footer><p>© 2026 <span>Tarun Deep</span> · Finance & Crypto Operations Professional · Gurugram, India</p></footer>
+
+<script>
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+animRing();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.width='20px';cursor.style.height='20px';ring.style.width='50px';ring.style.height='50px';});
+  el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';ring.style.width='36px';ring.style.height='36px';});
+});
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
